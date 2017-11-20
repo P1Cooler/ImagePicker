@@ -48,6 +48,8 @@ static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectio
     // Do any additional setup after loading the view.
     
     self.collectionView.frame = self.view.bounds;
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
 }
 
 - (void)didReceiveMemoryWarning {

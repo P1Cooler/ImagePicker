@@ -21,11 +21,12 @@
     
     configure.maxSelectedImageCount = 9;
     
+    CGFloat width = [UIScreen mainScreen].bounds.size.width * 1.0 / 4.0 - 6.0;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.minimumLineSpacing = 10;
-    layout.minimumInteritemSpacing = 10;
-    layout.itemSize = CGSizeMake(120, 100);
+    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+//    layout.minimumLineSpacing = 2;
+    layout.minimumInteritemSpacing = 2;
+    layout.itemSize = CGSizeMake(width, width);
     configure.layout = layout;
     
     return configure;

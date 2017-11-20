@@ -23,7 +23,8 @@
     if (imageAsset != _imageAsset) {
         _imageAsset = imageAsset;
         __weak typeof(self) weakSelf = self;
-        [self.phImageManager requestImageForAsset:imageAsset.originAsset targetSize:CGSizeMake(80, 80) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        CGFloat width = self.contentView.frame.size.width - 10;
+        [self.phImageManager requestImageForAsset:imageAsset.originAsset targetSize:CGSizeMake(width, width) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             __strong typeof(weakSelf) self = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (result) {
@@ -40,9 +41,10 @@
 {
     if (!_thumbImageView) {
         _thumbImageView = [[UIImageView alloc] init];
-        
+        CGFloat width = self.contentView.frame.size.width - 10;
+
         [self.contentView addSubview:_thumbImageView];
-        _thumbImageView.frame = CGRectMake(10, 10, 80, 80);
+        _thumbImageView.frame = CGRectMake(5, 5, width, width);
     }
     return _thumbImageView;
 }
