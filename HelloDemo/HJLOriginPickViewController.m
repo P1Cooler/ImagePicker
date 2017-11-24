@@ -18,6 +18,7 @@
 #import "P1ImageAsset.h"
 
 #import "PIImagePickerController.h"
+#import "P1ImagePickerConfigure.h"
 
 NSUInteger const kImageViewHeight = 100;
 NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
@@ -31,6 +32,8 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
 @property (nonatomic, strong) HJLCustomButton *pickMoreButton;
 @property (nonatomic, strong) UICollectionView *selectedMoreCollectView;
 @property (nonatomic, strong) NSArray <UIImage *> *selectedImages;
+@property (nonatomic, strong) UILabel *shotLabel;
+@property (nonatomic, strong) UISwitch *shotsSwitch;
 
 @property (nonatomic, strong) HJLCustomButton *pickVideoButton;
 
@@ -56,10 +59,15 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
     self.selectSingleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 200, kImageViewHeight, kImageViewHeight)];
     self.selectSingleImageView.contentMode = UIViewContentModeScaleAspectFill;
     
-    self.pickMoreButton = [[HJLCustomButton alloc] initWithFrame:CGRectMake(100, 350, 200, 40)];
+    self.pickMoreButton = [[HJLCustomButton alloc] initWithFrame:CGRectMake(10, 330, 150, 40)];
     self.pickMoreButton.backgroundColor = [UIColor redColor];
     [self.pickMoreButton setTitle:@"选取多张照片" forState:UIControlStateNormal];
     [self.pickMoreButton addTarget:self action:@selector(pickMoreButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+    self.shotLabel = [[UILabel alloc] init];
+    self.shotLabel.frame = CGRectMake(200, 330, 90, 40);
+    [self.shotLabel setText:@"包含拍摄"];
+    self.shotsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(300, 330, 40, 40)];
+    self.shotsSwitch.on = NO;
     
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
 
@@ -92,6 +100,8 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
     
     [self.view addSubview:self.pickMoreButton];
     [self.view addSubview:self.selectedMoreCollectView];
+    [self.view addSubview:self.shotLabel];
+    [self.view addSubview:self.shotsSwitch];
     
     [self.view addSubview:self.pickVideoButton];
     [self.view addSubview:self.selectVideoView];
@@ -104,6 +114,7 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
 
 
 #pragma mark - Target Action
+
 - (void)pickSystemVCClicked
 {
     self.customImagePickerController = [[PIImagePickerController alloc] init];
@@ -122,7 +133,9 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
 - (void)pickMoreButtonTouched
 {
     self.navigationController.navigationBarHidden = YES;
-    PIImagePickerController *vc = [[PIImagePickerController alloc] init];
+    P1ImagePickerConfigure *config = [P1ImagePickerConfigure defaultConfigure];
+    config.useCustomShootCell = self.shotsSwitch.isOn;
+    PIImagePickerController *vc = [[PIImagePickerController alloc] initWithImagePickerConfigure:config];
     UIBarButtonItem *rightBarItem =[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(_dismissImagePickController)];
     vc.navigationItem.rightBarButtonItem = rightBarItem;
     P1ImagePickerNavigationController *nav = [[P1ImagePickerNavigationController alloc] initWithRootViewController:vc];
@@ -145,6 +158,7 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
     [self presentViewController:self.customImagePickerController.systemImagePickerController animated:YES completion:^{
     }];
 }
+
 
 #pragma mark - P1ImagePickerControllerDelegate
 
@@ -175,6 +189,8 @@ NSString *const kPickImageTableViewIdentify = @"kPickImageTableViewIdentify";
             [self.selectedMoreCollectView reloadData];
         }
     }
+    NSLog(@"%@  %@", self.presentedViewController, self.presentingViewController);
+
     [self _dismissImagePickController];
 
 }

@@ -20,6 +20,7 @@
     P1ImagePickerConfigure *configure = [[P1ImagePickerConfigure alloc] init];
     
     configure.maxSelectedImageCount = 9;
+    configure.useCustomShootCell = NO;
     
     CGFloat width = [UIScreen mainScreen].bounds.size.width * 1.0 / 4.0 - 6.0;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];

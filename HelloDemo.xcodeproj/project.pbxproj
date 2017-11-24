@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F0A512E1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0A512D1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.m */; };
 		1FB105381FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB105371FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.m */; };
 		1FB105491FC2BF9100071176 /* P1ImagePreviewCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB105451FC2BF9100071176 /* P1ImagePreviewCollectionViewCell.m */; };
 		1FB1054A1FC2BF9100071176 /* P1ImagePreviewCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB105481FC2BF9100071176 /* P1ImagePreviewCollectionViewController.m */; };
@@ -51,6 +52,8 @@
 
 /* Begin PBXFileReference section */
 		16C6B6A9A189183694A8722B /* Pods_HelloDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HelloDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F0A512C1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = P1ImageShootCollectionViewCell.h; path = P1ImagePicker/P1ImageShootCollectionViewCell.h; sourceTree = "<group>"; };
+		1F0A512D1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = P1ImageShootCollectionViewCell.m; path = P1ImagePicker/P1ImageShootCollectionViewCell.m; sourceTree = "<group>"; };
 		1FB105361FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = P1ImageDefaultCollectionViewCell.h; path = P1ImagePicker/P1ImageDefaultCollectionViewCell.h; sourceTree = "<group>"; };
 		1FB105371FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = P1ImageDefaultCollectionViewCell.m; path = P1ImagePicker/P1ImageDefaultCollectionViewCell.m; sourceTree = "<group>"; };
 		1FB105451FC2BF9100071176 /* P1ImagePreviewCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = P1ImagePreviewCollectionViewCell.m; path = P1ImagePicker/P1ImagePreviewCollectionViewCell.m; sourceTree = "<group>"; };
@@ -213,6 +216,8 @@
 				1FDD02021FBEB789007BDEBA /* P1ImagePickerConfigure.m */,
 				1FB105361FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.h */,
 				1FB105371FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.m */,
+				1F0A512C1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.h */,
+				1F0A512D1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.m */,
 			);
 			path = P1ImagePicker;
 			sourceTree = "<group>";
@@ -434,6 +439,7 @@
 				1FDD01AA1FB9CED3007BDEBA /* ViewController.m in Sources */,
 				1FDD01EB1FBD6619007BDEBA /* P1ImagePickerNavigationController.m in Sources */,
 				1FDD02031FBEB789007BDEBA /* P1ImagePickerConfigure.m in Sources */,
+				1F0A512E1FC7CC6C0073A07B /* P1ImageShootCollectionViewCell.m in Sources */,
 				1FDD01F11FBD6930007BDEBA /* P1ImageAlbumTableViewController.m in Sources */,
 				1FDD02001FBD8DD1007BDEBA /* P1ImageAsset.m in Sources */,
 				1FB105381FC1E4BA00071176 /* P1ImageDefaultCollectionViewCell.m in Sources */,

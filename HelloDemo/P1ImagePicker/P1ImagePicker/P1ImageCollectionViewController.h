@@ -11,6 +11,11 @@
 @class P1ImagePickerConfigure;
 @class P1ImageAsset;
 
+typedef NS_ENUM(NSUInteger, P1ImageCollectionViewCellType) {
+    P1ImageCollectionViewCellTypeShoot, //拍摄Cell
+    P1ImageCollectionViewCellTypeNormal,//正常展示的Cell
+};
+
 NS_ASSUME_NONNULL_BEGIN;
 
 @interface P1ImageCollectionViewController : UICollectionViewController
@@ -22,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN;
 /**
  选中Cell的Block回调
  */
-@property (nonatomic, copy) void (^cellClickBlock)(NSIndexPath *indexPath);
+@property (nonatomic, copy) void (^cellClickBlock)(NSIndexPath *indexPatt, P1ImageCollectionViewCellType type);
 
 /**
  已选的图片列表

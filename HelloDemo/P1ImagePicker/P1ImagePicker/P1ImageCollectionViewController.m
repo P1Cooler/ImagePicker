@@ -11,6 +11,7 @@
 #import "P1ImageAsset.h"
 #import "P1ImagePickerConfigure.h"
 #import "P1ImageDefaultCollectionViewCell.h"
+#import "P1ImageShootCollectionViewCell.h"
 
 @interface P1ImageCollectionViewController ()
 
@@ -24,6 +25,7 @@
 @implementation P1ImageCollectionViewController
 
 static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectionViewCellIdentify";
+static NSString * const kP1ImageShootCollectionViewCellIdentify = @"kP1ImageShootCollectionViewCellIdentify";
 
 - (instancetype)initWithImagePickerConfigure:(P1ImagePickerConfigure *)configure
 {
@@ -45,6 +47,8 @@ static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectio
     
     // Register cell classes
     [self.collectionView registerClass:self.configure.customCollectionCellClass ?: [P1ImageDefaultCollectionViewCell class] forCellWithReuseIdentifier:kP1ImageCollectionViewCellIdentify];
+    [self.collectionView registerClass:[P1ImageShootCollectionViewCell class] forCellWithReuseIdentifier:kP1ImageShootCollectionViewCellIdentify];
+
     // Do any additional setup after loading the view.
     
     self.collectionView.frame = self.view.bounds;
@@ -62,6 +66,9 @@ static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectio
     if (_assets != assets) {
         _assets = assets;
         NSMutableArray *imageAssets = [NSMutableArray array];
+        if (self.configure.useCustomShootCell) {
+            [imageAssets addObject:[[P1ImageAsset alloc] init]];
+        }
         for (int i = 0; i < assets.count; i++) {
             PHAsset *asset = [self assetFromReversingIndex:i];
             P1ImageAsset *imageAsset = [[P1ImageAsset alloc] initWithPHAsset:asset];
@@ -100,20 +107,25 @@ static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectio
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    P1ImageDefaultCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kP1ImageCollectionViewCellIdentify forIndexPath:indexPath];
-    
-    P1ImageAsset *imageAsset = self.imageAssets[indexPath.row];
-    cell.imageAsset = imageAsset;
-    BOOL isSelected = [self isSelectedImageAsset:imageAsset];
-    
-    if (!isSelected) {
-        //未选中
-        cell.backgroundColor = [UIColor grayColor];
+    UICollectionViewCell *cell = nil;
+    if (self.configure.useCustomShootCell &&  indexPath.row == 0) {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:kP1ImageShootCollectionViewCellIdentify forIndexPath:indexPath];
     } else {
-        //选中
-        cell.backgroundColor = [UIColor greenColor] ;
+        P1ImageDefaultCollectionViewCell *defaultCell = [collectionView dequeueReusableCellWithReuseIdentifier:kP1ImageCollectionViewCellIdentify forIndexPath:indexPath];
+        
+        P1ImageAsset *imageAsset = self.imageAssets[indexPath.row];
+        defaultCell.imageAsset = imageAsset;
+        BOOL isSelected = [self isSelectedImageAsset:imageAsset];
+        
+        if (!isSelected) {
+            //未选中
+            defaultCell.backgroundColor = [UIColor grayColor];
+        } else {
+            //选中
+            defaultCell.backgroundColor = [UIColor greenColor] ;
+        }
+        cell = defaultCell;
     }
-
     // Configure the cell
     return cell;
 }
@@ -151,29 +163,35 @@ static NSString * const kP1ImageCollectionViewCellIdentify = @"kP1ImageCollectio
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    P1ImageAsset *imageAsset = self.imageAssets[indexPath.row];
-    BOOL isSelected = [self isSelectedImageAsset:imageAsset];
-    if (isSelected) {
-        [self.selectedImages removeObject:imageAsset];
-    } else {
-        if (self.selectedImages.count >= self.configure.maxSelectedImageCount) {
-            //已经到最大值，弹Allert，直接return
-            return;
+    if (self.configure.useCustomShootCell && indexPath.row == 0) {
+        if (self.cellClickBlock) {
+            self.cellClickBlock(indexPath, P1ImageCollectionViewCellTypeShoot);
         }
-        [self.selectedImages addObject:imageAsset];
-    }
-    
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    if (isSelected) {
-        //取消
-        cell.backgroundColor = [UIColor grayColor];
     } else {
-        //选中
-        cell.backgroundColor = [UIColor greenColor];
-    }
-    
-    if (self.cellClickBlock) {
-        self.cellClickBlock(indexPath);
+        P1ImageAsset *imageAsset = self.imageAssets[indexPath.row];
+        BOOL isSelected = [self isSelectedImageAsset:imageAsset];
+        if (isSelected) {
+            [self.selectedImages removeObject:imageAsset];
+        } else {
+            if (self.selectedImages.count >= self.configure.maxSelectedImageCount) {
+                //已经到最大值，弹Allert，直接return
+                return;
+            }
+            [self.selectedImages addObject:imageAsset];
+        }
+        
+        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+        if (isSelected) {
+            //取消
+            cell.backgroundColor = [UIColor grayColor];
+        } else {
+            //选中
+            cell.backgroundColor = [UIColor greenColor];
+        }
+        
+        if (self.cellClickBlock) {
+            self.cellClickBlock(indexPath, P1ImageCollectionViewCellTypeNormal);
+        }
     }
 }
 

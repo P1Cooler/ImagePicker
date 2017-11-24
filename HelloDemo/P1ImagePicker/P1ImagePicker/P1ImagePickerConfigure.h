@@ -12,8 +12,12 @@
 @interface P1ImagePickerConfigure : NSObject
 
 //use the enum
-@property (nonatomic, assign) NSInteger type;
+//@property (nonatomic, assign) NSInteger type;
 
+/**
+ 是否添加自定义的拍摄cell, default is NO
+ */
+@property (nonatomic, assign) BOOL useCustomShootCell;
 /**
  最大选择图片的数量
  */

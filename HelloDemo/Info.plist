@@ -6,6 +6,8 @@
 	<string>Demo需要您的同意摄像头</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Demo需要您的同意才能读取媒体资料库</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Demo需要您同意使用麦克风</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

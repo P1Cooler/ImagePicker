@@ -66,9 +66,11 @@
     [self.imagePickerModel populateAlbums];
     self.albumTableVC.albumList = self.imagePickerModel.albumInfoArray;
     [self.albumTableVC.tableView reloadData];
+    
+    [self buildViewConstraints];
 }
 
-- (void)updateViewConstraints
+- (void)buildViewConstraints
 {
     [self.albumTableVC.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
@@ -88,8 +90,6 @@
         make.bottom.equalTo(self.imageCollectVC.view.mas_bottom);
         make.right.equalTo(self.imageCollectVC.view.mas_right);
     }];
-    
-    [super updateViewConstraints];
 }
 
 #pragma mark - Target Action
@@ -111,6 +111,44 @@
     }
 }
 
+- (void)sendTakePhotosAction
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"拍照功能还未完善，拍照后选择照片未保存" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
+    //如果吊起 拍照，就会present2个ViewContoller，这是不被容许的。单独走下面的逻辑是没问题的
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = NO; //可编辑
+    //判断是否可以打开照相机
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        //摄像头
+        //UIImagePickerControllerSourceTypeSavedPhotosAlbum:相机胶卷
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+}
+
+- (void)sendTakeVideoAction
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
+        picker.videoQuality = UIImagePickerControllerQualityTypeMedium; //录像质量
+        picker.videoMaximumDuration = 600.0f; //录像最长时间
+        picker.mediaTypes = [NSArray arrayWithObjects:@"public.movie", nil];
+        //跳转到拍摄页面
+        [self presentViewController:picker animated:YES completion:nil];
+        
+     
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"当前设备不支持录像功能" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alert show];
+    }
+
+}
+
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
@@ -126,11 +164,17 @@
         asset = [[P1ImageAsset alloc] initWithImage:contentImage];
     }
     
+    //这里主要是解决Presenting view controllers on detached view controllers is discouraged 错误
+    [self dismissViewControllerAnimated:YES completion:^{
+        ;
+    }];
     
     if (asset && [self.delegate respondsToSelector:@selector(P1_imagePickerController:didFinishPickingImages:)]) {
         NSArray<P1ImageAsset *> *images = asset ? [NSArray arrayWithObject:asset] : nil;
         [self.delegate P1_imagePickerController:self didFinishPickingImages:images];
     }
+    
+    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -201,19 +245,33 @@
         
         __weak typeof(self) weakSelf = self;
 
-        _imageCollectVC.cellClickBlock = ^(NSIndexPath *indexPath){
+        _imageCollectVC.cellClickBlock = ^(NSIndexPath *indexPath, P1ImageCollectionViewCellType type){
             __strong typeof(weakSelf) self = weakSelf;
-            if (self.selectedImages.count > 0) {
-                //完成的数量变化
-                self.doneButton.backgroundColor = [UIColor redColor];
-                self.previewButton.backgroundColor = [UIColor redColor];
-                [self.doneButton setTitle:[@(self.selectedImages.count) stringValue] forState:UIControlStateNormal];
-            } else {
-                self.doneButton.backgroundColor = [UIColor grayColor];
-                self.previewButton.backgroundColor = [UIColor grayColor];
-                [self.doneButton setTitle:@"完成" forState:UIControlStateNormal];
-            }
 
+            if (type == P1ImageCollectionViewCellTypeShoot) {
+//                [self sendTakePhotosAction];
+                UIAlertController *alertVC = [[UIAlertController alloc] init];
+                UIAlertAction *photosAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self sendTakePhotosAction];
+                }];
+                UIAlertAction *videoAction = [UIAlertAction actionWithTitle:@"摄影" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self sendTakeVideoAction];
+                }];
+                [alertVC addAction:photosAction];
+                [alertVC addAction:videoAction];
+                [self presentViewController:alertVC animated:YES completion:nil];
+            } else {
+                if (self.selectedImages.count > 0) {
+                    //完成的数量变化
+                    self.doneButton.backgroundColor = [UIColor redColor];
+                    self.previewButton.backgroundColor = [UIColor redColor];
+                    [self.doneButton setTitle:[@(self.selectedImages.count) stringValue] forState:UIControlStateNormal];
+                } else {
+                    self.doneButton.backgroundColor = [UIColor grayColor];
+                    self.previewButton.backgroundColor = [UIColor grayColor];
+                    [self.doneButton setTitle:@"完成" forState:UIControlStateNormal];
+                }
+            }
         };
     }
     return _imageCollectVC;
